@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import React, { useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
 import { createClient } from "@supabase/supabase-js";
@@ -53,7 +54,7 @@ const S = {
 };
 
 /** ---------- Component ---------- */
-export default function Home() {
+function Home() {    
   /** Identity / room */
   const [roomCode, setRoomCode] = useState<string>("");
   const [myName, setMyName] = useState<string>("");
@@ -555,3 +556,4 @@ export default function Home() {
     </div>
   );
 }
+export default dynamic(() => Promise.resolve(Home), { ssr: false });
