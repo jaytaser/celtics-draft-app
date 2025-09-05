@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html, body, #__next { height: 100%; }
+body { @apply bg-slate-950 text-slate-100; }
+.card { @apply bg-slate-900/70 rounded-2xl shadow-lg p-4; }
+.btn { @apply inline-flex items-center gap-2 px-3 py-2 rounded-xl font-medium bg-slate-800 hover:bg-slate-700; }
+.btn-primary { @apply bg-emerald-600 hover:bg-emerald-500; }
+.tag { @apply text-xs px-2 py-1 rounded-full bg-slate-800; }
+table { @apply w-full text-sm; }
+th, td { @apply p-2 text-left; }
+thead th { @apply sticky top-0 bg-slate-900; }

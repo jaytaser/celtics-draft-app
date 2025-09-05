@@ -1,0 +1,346 @@
+[
+  [
+    "10/12/2025",
+    "7:00 PM",
+    "SUN",
+    "Cleveland Cavaliers",
+    "Gray",
+    85.0
+  ],
+  [
+    "10/15/2025",
+    "7:30 PM",
+    "WED",
+    "Toronto Raptors",
+    "Gray",
+    85.0
+  ],
+  [
+    "10/22/2025",
+    "7:30 PM",
+    "WED",
+    "Philadelphia 76ers",
+    "Green",
+    170.0
+  ],
+  [
+    "10/29/2025",
+    "7:00 PM",
+    "WED",
+    "Cleveland Cavaliers",
+    "White",
+    136.0
+  ],
+  [
+    "11/1/2025",
+    "8:00 PM",
+    "SAT",
+    "Houston Rockets",
+    "Gold",
+    221.0
+  ],
+  [
+    "11/3/2025",
+    "7:30 PM",
+    "MON",
+    "Utah Jazz",
+    "Gray",
+    85.0
+  ],
+  [
+    "11/5/2025",
+    "7:30 PM",
+    "WED",
+    "Washington Wizards",
+    "White",
+    136.0
+  ],
+  [
+    "11/12/2025",
+    "7:30 PM",
+    "WED",
+    "Memphis Grizzlies",
+    "White",
+    136.0
+  ],
+  [
+    "11/16/2025",
+    "3:30 PM",
+    "SUN",
+    "LA Clippers",
+    "Gold",
+    221.0
+  ],
+  [
+    "11/21/2025",
+    "7:30 PM",
+    "FRI",
+    "Brooklyn Nets",
+    "White",
+    136.0
+  ],
+  [
+    "11/23/2025",
+    "6:00 PM",
+    "SUN",
+    "Orlando Magic",
+    "Green",
+    170.0
+  ],
+  [
+    "11/26/2025",
+    "5:00 PM",
+    "WED",
+    "Detroit Pistons",
+    "Green",
+    170.0
+  ],
+  [
+    "12/2/2025",
+    "8:00 PM",
+    "TUE",
+    "New York Knicks",
+    "Gold",
+    221.0
+  ],
+  [
+    "12/5/2025",
+    "7:00 PM",
+    "FRI",
+    "Los Angeles Lakers",
+    "Platinum",
+    340.0
+  ],
+  [
+    "12/9/2025",
+    "7:30 PM",
+    "TUE",
+    "TBD",
+    "Gray",
+    85.0
+  ],
+  [
+    "12/19/2025",
+    "7:00 PM",
+    "FRI",
+    "Miami Heat",
+    "Gold",
+    221.0
+  ],
+  [
+    "12/22/2025",
+    "7:30 PM",
+    "MON",
+    "Indiana Pacers",
+    "Green",
+    170.0
+  ],
+  [
+    "1/5/2026",
+    "7:30 PM",
+    "MON",
+    "Chicago Bulls",
+    "White",
+    136.0
+  ],
+  [
+    "1/7/2026",
+    "7:30 PM",
+    "WED",
+    "Denver Nuggets",
+    "Green",
+    170.0
+  ],
+  [
+    "1/9/2026",
+    "7:00 PM",
+    "FRI",
+    "Toronto Raptors",
+    "White",
+    136.0
+  ],
+  [
+    "1/10/2026",
+    "8:00 PM",
+    "SAT",
+    "San Antonio Spurs",
+    "Gold",
+    221.0
+  ],
+  [
+    "1/21/2026",
+    "7:30 PM",
+    "WED",
+    "Indiana Pacers",
+    "White",
+    136.0
+  ],
+  [
+    "1/26/2026",
+    "8:00 PM",
+    "MON",
+    "Portland Trail Blazers",
+    "Gray",
+    85.0
+  ],
+  [
+    "1/28/2026",
+    "7:30 PM",
+    "WED",
+    "Atlanta Hawks",
+    "White",
+    136.0
+  ],
+  [
+    "1/30/2026",
+    "7:30 PM",
+    "FRI",
+    "Sacramento Kings",
+    "Green",
+    170.0
+  ],
+  [
+    "2/1/2026",
+    "3:30 PM",
+    "SUN",
+    "Milwaukee Bucks",
+    "Platinum",
+    340.0
+  ],
+  [
+    "2/6/2026",
+    "7:30 PM",
+    "FRI",
+    "Miami Heat",
+    "Green",
+    170.0
+  ],
+  [
+    "2/8/2026",
+    "12:30 PM",
+    "SUN",
+    "New York Knicks",
+    "Platinum",
+    340.0
+  ],
+  [
+    "2/11/2026",
+    "7:30 PM",
+    "WED",
+    "Chicago Bulls",
+    "Gray",
+    85.0
+  ],
+  [
+    "2/27/2026",
+    "7:30 PM",
+    "FRI",
+    "Brooklyn Nets",
+    "Green",
+    170.0
+  ],
+  [
+    "3/1/2026",
+    "6:00 PM",
+    "SUN",
+    "Philadelphia 76ers",
+    "White",
+    136.0
+  ],
+  [
+    "3/4/2026",
+    "7:30 PM",
+    "WED",
+    "Charlotte Hornets",
+    "White",
+    136.0
+  ],
+  [
+    "3/6/2026",
+    "7:00 PM",
+    "FRI",
+    "Dallas Mavericks",
+    "Platinum",
+    340.0
+  ],
+  [
+    "3/14/2026",
+    "6:00 PM",
+    "SAT",
+    "Washington Wizards",
+    "Gold",
+    221.0
+  ],
+  [
+    "3/16/2026",
+    "8:00 PM",
+    "MON",
+    "Phoenix Suns",
+    "White",
+    136.0
+  ],
+  [
+    "3/18/2026",
+    "7:00 PM",
+    "WED",
+    "Golden State Warriors",
+    "Gold",
+    221.0
+  ],
+  [
+    "3/22/2026",
+    "8:00 PM",
+    "SUN",
+    "Minnesota Timberwolves",
+    "Green",
+    170.0
+  ],
+  [
+    "3/25/2026",
+    "7:30 PM",
+    "WED",
+    "Oklahoma City Thunder",
+    "Gold",
+    221.0
+  ],
+  [
+    "3/27/2026",
+    "7:30 PM",
+    "FRI",
+    "Atlanta Hawks",
+    "Green",
+    170.0
+  ],
+  [
+    "4/5/2026",
+    "3:30 PM",
+    "SUN",
+    "Toronto Raptors",
+    "White",
+    136.0
+  ],
+  [
+    "4/7/2026",
+    "7:30 PM",
+    "TUE",
+    "Charlotte Hornets",
+    "Gray",
+    85.0
+  ],
+  [
+    "4/10/2026",
+    "7:30 PM",
+    "FRI",
+    "New Orleans Pelicans",
+    "Green",
+    170.0
+  ],
+  [
+    "4/12/2026",
+    "6:00 PM",
+    "SUN",
+    "Orlando Magic",
+    "Gray",
+    85.0
+  ]
+]
