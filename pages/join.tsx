@@ -1,9 +1,10 @@
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { getSupabase } from "../lib/supabaseClient";
 
 const supabase = getSupabase();
 
-export default function Join() {
+function Join() {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
 
@@ -91,3 +92,5 @@ export default function Join() {
     </div>
   );
 }
+
+export default dynamic(() => Promise.resolve(Join), { ssr: false });
