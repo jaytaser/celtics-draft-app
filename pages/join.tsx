@@ -23,19 +23,20 @@ export default function Join() {
     e.preventDefault();
     const roomCode = room.trim().toUpperCase();
     const displayName = name.trim();
-    const emailNorm = email.trim().toLowerCase();
+    const emailRaw = email.trim();               // keep original casing for display/storage
+    const emailNorm = emailRaw.toLowerCase();    // use for lookups when needed
 
-    if (!roomCode || !displayName || !emailNorm) {
+    if (!roomCode || !displayName || !emailRaw) {
       alert("Room, name, and email are required.");
       return;
     }
 
-    // Upsert player by (room_code, email)
+    // Look up existing player by case-insensitive email for this room
     const { data: existing, error: selErr } = await supabase
       .from("players")
       .select("*")
       .eq("room_code", roomCode)
-      .ilike("email", emailNorm)  // ilike to be safe with case
+      .ilike("email", emailRaw) // safe even if casing differs
       .maybeSingle();
 
     if (selErr) {
@@ -43,23 +44,23 @@ export default function Join() {
       return;
     }
 
-    let prevName = existing?.name as string | undefined;
+    const prevName: string | undefined = existing?.name;
 
-    // Upsert (update name if same email)
+    // Upsert with conflict target on the generated column (room_code, email_ci)
     const { error: upErr } = await supabase.from("players").upsert(
       {
         room_code: roomCode,
-        email: emailNorm,
+        email: emailRaw,   // DB computes email_ci = lower(email)
         name: displayName,
       } as any,
-      { onConflict: "room_code,email" }
+      { onConflict: "room_code,email_ci" }
     );
     if (upErr) {
       alert(upErr.message);
       return;
     }
 
-    // Keep draft_order in sync with the submitted name
+    // Keep rooms.draft_order in sync with the submitted name
     const { data: roomRow, error: roomErr } = await supabase
       .from("rooms")
       .select("draft_order")
@@ -70,7 +71,9 @@ export default function Join() {
       return;
     }
 
-    let draftOrder: string[] = Array.isArray(roomRow?.draft_order) ? [...(roomRow!.draft_order as string[])] : [];
+    let draftOrder: string[] = Array.isArray(roomRow?.draft_order)
+      ? [...(roomRow!.draft_order as string[])]
+      : [];
 
     if (prevName) {
       // If they changed their name, rename in draft_order
@@ -89,12 +92,12 @@ export default function Join() {
       await supabase.from("rooms").update({ draft_order: draftOrder }).eq("code", roomCode);
     }
 
-    // Store for the main app (your index.tsx expects these)
+    // Store for index.tsx
     localStorage.setItem("room_code", roomCode);
     localStorage.setItem("player_name", displayName);
-    localStorage.setItem("player_email", emailNorm);
+    localStorage.setItem("player_email", emailNorm); // store lowercased for future lookups
 
-    // Jump to draft
+    // Go to the draft
     window.location.href = `/?room=${encodeURIComponent(roomCode)}`;
   }
 
