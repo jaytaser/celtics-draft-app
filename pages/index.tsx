@@ -512,75 +512,86 @@ function Home() {
 
 
       {/* Main grid */}
-      <div className="mainGrid" style={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: 12 }}>
-        
-{/* games table */}
-<div className="card" style={S.card}>
-  <div className="tableWrap" style={{ overflow: "auto", maxHeight: "60vh", border: "1px solid #1f2937", borderRadius: 12 }}>
-    <table className="gamesTable" style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}>
-      <thead>
-        <tr>
-          <th style={S.th}>Pick</th>
-          <th style={S.th}>Date</th>
-          <th style={S.th}>Time</th>
-          <th style={S.th}>Day</th>
-          <th style={S.th}>Opponent</th>
-          <th style={S.th}>Tier</th>
-          <th style={S.th}>Price</th>
-          <th style={S.th}>Remove</th>
-        </tr>
-      </thead>
-      <tbody>
-        {available.map((g, idx) => (
-          <tr key={g.id} style={{ background: idx % 2 ? "rgba(30,41,59,0.5)" : "rgba(2,6,23,0.2)" }}>
-            <td style={S.td}>
-              <button className="btnPrimary" style={S.btnP} onClick={() => draft(g)}>Draft</button>
-            </td>
-            <td style={S.td}>{g.Date}</td>
-            <td style={S.td}>{g.Time}</td>
-            <td style={S.td}>{g.Day}</td>
-            <td style={S.td}>{g.Opponent}</td>
-            <td style={S.td}>{g.Tier}</td>
-            <td style={S.td}>${g.Price.toFixed(2)}</td>
-            <td style={S.td}>
-              <button className="btn" style={S.btn} onClick={() => removeGame(g.id)}>Remove</button>
-            </td>
+<div
+  className="mainGrid"
+  style={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: 12 }}
+>
+  {/* LEFT: games table */}
+  <div className="card" style={S.card}>
+    <div
+      className="tableWrap"
+      style={{ overflow: "auto", maxHeight: "60vh", border: "1px solid #1f2937", borderRadius: 12 }}
+    >
+      <table
+        className="gamesTable"
+        style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}
+      >
+        <thead>
+          <tr>
+            <th style={S.th}>Pick</th>
+            <th style={S.th}>Date</th>
+            <th style={S.th}>Time</th>
+            <th style={S.th}>Day</th>
+            <th style={S.th}>Opponent</th>
+            <th style={S.th}>Tier</th>
+            <th style={S.th}>Price</th>
+            <th style={S.th}>Remove</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
-{/* Picks by player */}
-<div style={{ display: "grid", gap: 12 }}>
-  {players.map((name) => (
-    <div key={name} className="card" style={S.card}>
-      <div style={{ fontWeight: 800, marginBottom: 8 }}>{name}</div>
-      <ul style={{ display: "grid", gap: 8, margin: 0, paddingLeft: 16 }}>
-        {(picks[name] || []).map((p, i) => (
-          <li
-            key={i}
-            style={{
-              background: "#1f2937",
-              borderRadius: 10,
-              padding: 8,
-              fontSize: 12,
-            }}
-          >
-            {p.Date} • {p.Opponent} • ${p.Price}
-          </li>
-        ))}
-      </ul>
+        </thead>
+        <tbody>
+          {available.map((g, idx) => (
+            <tr
+              key={g.id}
+              style={{ background: idx % 2 ? "rgba(30,41,59,0.5)" : "rgba(2,6,23,0.2)" }}
+            >
+              <td style={S.td}>
+                <button className="btnPrimary" style={S.btnP} onClick={() => draft(g)}>
+                  Draft
+                </button>
+              </td>
+              <td style={S.td}>{g.Date}</td>
+              <td style={S.td}>{g.Time}</td>
+              <td style={S.td}>{g.Day}</td>
+              <td style={S.td}>{g.Opponent}</td>
+              <td style={S.td}>{g.Tier}</td>
+              <td style={S.td}>${g.Price.toFixed(2)}</td>
+              <td style={S.td}>
+                <button className="btn" style={S.btn} onClick={() => removeGame(g.id)}>
+                  Remove
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
-  ))}
-</div>
-      </div>   {/* end: right column */}
-    </div>     {/* end: mainGrid */}
-  </div>       {/* end: container */}
-);
-}              // end: function Home
+  </div>
 
+  {/* RIGHT: picks by player (this is the right column) */}
+  <div style={{ display: "grid", gap: 12 }}>
+    {players.map((name) => (
+      <div key={name} className="card" style={S.card}>
+        <div style={{ fontWeight: 800, marginBottom: 8 }}>{name}</div>
+        <ul style={{ display: "grid", gap: 8, margin: 0, paddingLeft: 16 }}>
+          {(picks[name] || []).map((p, i) => (
+            <li
+              key={i}
+              style={{ background: "#1f2937", borderRadius: 10, padding: 8, fontSize: 12 }}
+            >
+              {p.Date} • {p.Opponent} • ${p.Price}
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+
+    {/* If you have the “Edit draft order” card, it also belongs here inside the right column */}
+    {/* <div className="card" style={S.card}>…</div> */}
+  </div>
+</div>  {/* end: mainGrid */}
+
+</div>    {/* end: container */}
+);         // end: return
+}          // end: function Home
 
 export default dynamic(() => Promise.resolve(Home), { ssr: false });
