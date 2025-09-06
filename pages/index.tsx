@@ -130,7 +130,7 @@ function Home() {
   /** Draft order persisted on server as array of player names (text[]) */
   const [orderNames, setOrderNames] = useState<string[]>([]);
 
-  /** Filters */
+  /** Filters (collapsed by default) */
   const [filter, setFilter] = useState({
     q: "",
     tier: "",
@@ -138,9 +138,9 @@ function Home() {
     min: "",
     dow: "",
   });
-  const [filtersOpen, setFiltersOpen] = useState(true); // collapsible on mobile
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
-  /** Add-game form */
+  /** Add-game form (collapsed by default) */
   const [newGame, setNewGame] = useState({
     Date: "",
     Time: "",
@@ -149,6 +149,7 @@ function Home() {
     Tier: "",
     Price: "",
   });
+  const [addOpen, setAddOpen] = useState(false);
 
   /** season local remember */
   useEffect(() => {
@@ -506,13 +507,24 @@ function Home() {
               Export XLS
             </button>
 
-            {/* Mobile-only toggle for filters */}
+            {/* Mobile/desktop toggles */}
             <button
-              className="btn mobileOnly"
-              style={{ ...S.btn, display: "none", marginLeft: "auto" }}
+              className="btn"
+              style={S.btn}
+              aria-expanded={filtersOpen}
+              aria-controls="filters-section"
               onClick={() => setFiltersOpen((v) => !v)}
             >
               {filtersOpen ? "Hide Filters" : "Show Filters"}
+            </button>
+            <button
+              className="btn"
+              style={S.btn}
+              aria-expanded={addOpen}
+              aria-controls="add-section"
+              onClick={() => setAddOpen((v) => !v)}
+            >
+              {addOpen ? "Hide Add Game" : "Show Add Game"}
             </button>
           </div>
         </div>
@@ -558,20 +570,13 @@ function Home() {
               Turn: <b>{turn + 1}</b> • Current: <b>{currentPlayerName || "…"}</b>{" "}
               {isMyTurn ? " (your turn)" : ""}
             </div>
-
-            {/* Mobile Filters Toggle duplicated here for accessibility */}
-            <button
-              className="btn mobileOnly"
-              style={{ ...S.btn, display: "none", marginLeft: "auto" }}
-              onClick={() => setFiltersOpen((v) => !v)}
-            >
-              {filtersOpen ? "Hide Filters" : "Show Filters"}
-            </button>
           </div>
 
-          {/* Filters */}
-          <div
+          {/* Filters (collapsible) */}
+          <section
+            id="filters-section"
             className={`filtersWrap ${filtersOpen ? "open" : "closed"}`}
+            aria-hidden={!filtersOpen}
             style={{ width: "100%", minWidth: 0 }}
           >
             <div className="filtersGrid" style={{ width: "100%", minWidth: 0 }}>
@@ -622,7 +627,7 @@ function Home() {
                 Current: <b>{currentPlayerName || "…"}</b>
               </div>
             </div>
-          </div>
+          </section>
         </div>
 
         {/* Edit order */}
@@ -691,67 +696,85 @@ function Home() {
           </ol>
         </div>
 
-        {/* Add game */}
+        {/* Add game (collapsible) */}
         <div className="card" style={{ ...S.card, marginBottom: 12 }}>
-          <div style={{ fontWeight: 800, marginBottom: 8 }}>Add Game</div>
-          <div
-            className="addGameGrid"
-            style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8 }}
-          >
-            <input
-              className="input"
-              style={S.input}
-              placeholder="Date (MM/DD/YYYY)"
-              value={newGame.Date}
-              onChange={(e) => setNewGame({ ...newGame, Date: e.target.value })}
-            />
-            <input
-              className="input"
-              style={S.input}
-              placeholder="Time (e.g. 7:30 PM)"
-              value={newGame.Time}
-              onChange={(e) => setNewGame({ ...newGame, Time: e.target.value })}
-            />
-            <select
-              className="input"
-              style={S.input as React.CSSProperties}
-              value={newGame.Day}
-              onChange={(e) => setNewGame({ ...newGame, Day: e.target.value })}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+            <div style={{ fontWeight: 800 }}>Add Game</div>
+            <button
+              className="btn"
+              style={S.btn}
+              aria-expanded={addOpen}
+              aria-controls="add-section"
+              onClick={() => setAddOpen((v) => !v)}
             >
-              <option value="">Day</option>
-              {DOW.map((d) => (
-                <option key={d}>{d}</option>
-              ))}
-            </select>
-            <input
-              className="input"
-              style={S.input}
-              placeholder="Opponent"
-              value={newGame.Opponent}
-              onChange={(e) => setNewGame({ ...newGame, Opponent: e.target.value })}
-            />
-            <select
-              className="input"
-              style={S.input as React.CSSProperties}
-              value={newGame.Tier}
-              onChange={(e) => setNewGame({ ...newGame, Tier: e.target.value })}
-            >
-              <option value="">Tier</option>
-              {TIERS.map((t) => (
-                <option key={t}>{t}</option>
-              ))}
-            </select>
-            <input
-              className="input"
-              style={S.input}
-              placeholder="Price"
-              value={newGame.Price}
-              onChange={(e) => setNewGame({ ...newGame, Price: e.target.value })}
-            />
-            <button className="btnPrimary" style={S.btnP} onClick={addGame}>
-              Add
+              {addOpen ? "Hide" : "Show"}
             </button>
           </div>
+
+          <section
+            id="add-section"
+            className={`collapsible ${addOpen ? "open" : "closed"}`}
+            aria-hidden={!addOpen}
+          >
+            <div
+              className="addGameGrid"
+              style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8, marginTop: 8 }}
+            >
+              <input
+                className="input"
+                style={S.input}
+                placeholder="Date (MM/DD/YYYY)"
+                value={newGame.Date}
+                onChange={(e) => setNewGame({ ...newGame, Date: e.target.value })}
+              />
+              <input
+                className="input"
+                style={S.input}
+                placeholder="Time (e.g. 7:30 PM)"
+                value={newGame.Time}
+                onChange={(e) => setNewGame({ ...newGame, Time: e.target.value })}
+              />
+              <select
+                className="input"
+                style={S.input as React.CSSProperties}
+                value={newGame.Day}
+                onChange={(e) => setNewGame({ ...newGame, Day: e.target.value })}
+              >
+                <option value="">Day</option>
+                {DOW.map((d) => (
+                  <option key={d}>{d}</option>
+                ))}
+              </select>
+              <input
+                className="input"
+                style={S.input}
+                placeholder="Opponent"
+                value={newGame.Opponent}
+                onChange={(e) => setNewGame({ ...newGame, Opponent: e.target.value })}
+              />
+              <select
+                className="input"
+                style={S.input as React.CSSProperties}
+                value={newGame.Tier}
+                onChange={(e) => setNewGame({ ...newGame, Tier: e.target.value })}
+              >
+                <option value="">Tier</option>
+                {TIERS.map((t) => (
+                  <option key={t}>{t}</option>
+                ))}
+              </select>
+              <input
+                className="input"
+                style={S.input}
+                placeholder="Price"
+                value={newGame.Price}
+                onChange={(e) => setNewGame({ ...newGame, Price: e.target.value })}
+              />
+              <button className="btnPrimary" style={S.btnP} onClick={addGame}>
+                Add
+              </button>
+            </div>
+          </section>
         </div>
 
         {/* Main grid */}
@@ -830,17 +853,15 @@ function Home() {
           overflow-x: auto;
         }
 
-        /* Filters responsive grid + collapse */
+        /* Collapsible helpers */
         .filtersGrid {
           display: grid;
           grid-template-columns: repeat(6, minmax(0, 1fr));
           gap: 8px;
         }
-        .filtersWrap.closed {
+        .filtersWrap.closed,
+        .collapsible.closed {
           display: none;
-        }
-        .mobileOnly {
-          display: none !important;
         }
 
         @media (max-width: 900px) {
@@ -875,11 +896,6 @@ function Home() {
           /* Filters: 2 columns on tablets */
           .filtersGrid {
             grid-template-columns: 1fr 1fr !important;
-          }
-
-          /* Show mobile-only buttons */
-          .mobileOnly {
-            display: inline-block !important;
           }
         }
 
