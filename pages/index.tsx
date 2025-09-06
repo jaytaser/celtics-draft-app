@@ -117,27 +117,19 @@ function Home() {
 
   /** Core state */
   const [season, setSeason] = useState<string>(() =>
-    typeof window !== "undefined"
-      ? localStorage.getItem("season") || SEASONS[0]
-      : SEASONS[0]
+    typeof window !== "undefined" ? localStorage.getItem("season") || SEASONS[0] : SEASONS[0]
   );
   const [games, setGames] = useState<Game[]>([]);
   const [players, setPlayers] = useState<string[]>([]);
   const [picks, setPicks] = useState<Record<string, Game[]>>({});
-  const [turn, setTurn] = useState(0); // persisted via rooms.turn
-  const [snake, setSnake] = useState(true); // persisted via rooms.snake
+  const [turn, setTurn] = useState(0);
+  const [snake, setSnake] = useState(true);
 
   /** Draft order persisted on server as array of player names (text[]) */
   const [orderNames, setOrderNames] = useState<string[]>([]);
 
   /** Filters (collapsed by default) */
-  const [filter, setFilter] = useState({
-    q: "",
-    tier: "",
-    max: "",
-    min: "",
-    dow: "",
-  });
+  const [filter, setFilter] = useState({ q: "", tier: "", max: "", min: "", dow: "" });
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   /** Add-game form (collapsed by default) */
@@ -213,9 +205,7 @@ function Home() {
       }));
 
       // Build picks by player from picked_by
-      const byPlayer: Record<string, Game[]> = Object.fromEntries(
-        names.map((n) => [n, []])
-      );
+      const byPlayer: Record<string, Game[]> = Object.fromEntries(names.map((n) => [n, []]));
       for (const g of mapped) {
         if (g.picked_by && byPlayer[g.picked_by]) byPlayer[g.picked_by].push(g);
       }
@@ -229,20 +219,14 @@ function Home() {
     // realtime
     const ch = supabase
       .channel(`room:${roomCode}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "rooms", filter: `code=eq.${roomCode}` },
-        () => load()
+      .on("postgres_changes", { event: "*", schema: "public", table: "rooms", filter: `code=eq.${roomCode}` }, () =>
+        load()
       )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "players", filter: `room_code=eq.${roomCode}` },
-        () => load()
+      .on("postgres_changes", { event: "*", schema: "public", table: "players", filter: `room_code=eq.${roomCode}` }, () =>
+        load()
       )
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "games", filter: `room_code=eq.${roomCode}` },
-        () => load()
+      .on("postgres_changes", { event: "*", schema: "public", table: "games", filter: `room_code=eq.${roomCode}` }, () =>
+        load()
       )
       .subscribe();
 
@@ -251,7 +235,7 @@ function Home() {
     };
   }, [roomCode]);
 
-  /** Helpers: derive current player from server-persisted order (orderNames) + snake + turn */
+  /** Helpers: derive current player from order + snake + turn */
   function currentIndex(turnNum: number, n: number) {
     if (n === 0) return 0;
     const round = Math.floor(turnNum / n);
@@ -276,9 +260,7 @@ function Home() {
       .filter((g) => !takenIds.has(g.id))
       .filter((g) => (filter.tier ? g.Tier === filter.tier : true))
       .filter((g) => (filter.dow ? g.Day === filter.dow : true))
-      .filter((g) =>
-        filter.q ? g.Opponent.toLowerCase().includes(filter.q.toLowerCase()) : true
-      )
+      .filter((g) => (filter.q ? g.Opponent.toLowerCase().includes(filter.q.toLowerCase()) : true))
       .filter((g) => (filter.max ? g.Price <= Number(filter.max) : true))
       .filter((g) => (filter.min ? g.Price >= Number(filter.min) : true));
   }, [games, filter]);
@@ -326,7 +308,7 @@ function Home() {
     persistOrder(arr);
   }
 
-  /** ---------- Draft op with guard ---------- */
+  /** ---------- Draft op ---------- */
   async function draft(game: Game) {
     if (!isMyTurn) {
       alert(`Not your turn. Current: ${currentPlayerName || "?"}`);
@@ -352,11 +334,11 @@ function Home() {
     }
 
     const nextTurn = turn + 1;
-    setTurn(nextTurn); // optimistic
+    setTurn(nextTurn);
     await supabase.from("rooms").update({ turn: nextTurn }).eq("code", roomCode);
   }
 
-  /** ---------- Add / Remove (persisted) ---------- */
+  /** ---------- Add / Remove ---------- */
   async function addGame() {
     const { Date, Time, Day, Opponent, Tier, Price } = newGame;
     if (!Date || !Time || !Day || !Opponent || !Tier || !Price) return;
@@ -378,25 +360,15 @@ function Home() {
     await supabase.from("games").delete().eq("room_code", roomCode).eq("id", id);
   }
 
-  /** ---------- Export: CSV / XLS ---------- */
+  /** ---------- Export ---------- */
   function exportCSV() {
     const rows = [["Player", "Date", "Time", "Day", "Opponent", "Tier", "Price"]];
     games
       .filter((g) => !!g.picked_by)
       .forEach((g) => {
-        rows.push([
-          g.picked_by as string,
-          g.Date,
-          g.Time,
-          g.Day,
-          g.Opponent,
-          g.Tier,
-          String(g.Price),
-        ]);
+        rows.push([g.picked_by as string, g.Date, g.Time, g.Day, g.Opponent, g.Tier, String(g.Price)]);
       });
-    const csv = rows
-      .map((r) => r.map((v) => `"${String(v).replaceAll(`"`, `""`)}"`).join(","))
-      .join("\n");
+    const csv = rows.map((r) => r.map((v) => `"${String(v).replaceAll(`"`, `""`)}"`).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -478,17 +450,10 @@ function Home() {
       <div className="container" style={S.page}>
         {/* top bar */}
         <div className="toolbar" style={{ ...S.row, marginBottom: 12 }}>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>
-            🏀 Celtics Ticket Draft
-          </h1>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>🏀 Celtics Ticket Draft</h1>
 
           <div className="toolbar" style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <select
-              className="input"
-              style={S.input as React.CSSProperties}
-              value={season}
-              onChange={(e) => setSeason(e.target.value)}
-            >
+            <select className="input" style={S.input as React.CSSProperties} value={season} onChange={(e) => setSeason(e.target.value)}>
               {SEASONS.map((s) => (
                 <option key={s}>{s}</option>
               ))}
@@ -507,42 +472,18 @@ function Home() {
               Export XLS
             </button>
 
-            {/* Mobile/desktop toggles */}
-            <button
-              className="btn"
-              style={S.btn}
-              aria-expanded={filtersOpen}
-              aria-controls="filters-section"
-              onClick={() => setFiltersOpen((v) => !v)}
-            >
-              {filtersOpen ? "Hide Filters" : "Show Filters"}
-            </button>
-            <button
-              className="btn"
-              style={S.btn}
-              aria-expanded={addOpen}
-              aria-controls="add-section"
-              onClick={() => setAddOpen((v) => !v)}
-            >
+            {/* Collapsible toggles */}
+            <button className="btn" style={S.btn} aria-expanded={addOpen} aria-controls="add-section" onClick={() => setAddOpen((v) => !v)}>
               {addOpen ? "Hide Add Game" : "Show Add Game"}
             </button>
           </div>
         </div>
 
-        {/* draft order + filters */}
-        <div style={{ ...S.card, ...S.row, marginBottom: 12, width: "100%", minWidth: 0 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              flexWrap: "wrap",
-              minWidth: 0,
-              width: "100%",
-            }}
-          >
+        {/* draft order (filters moved lower) */}
+        <div className="card" style={{ ...S.card, marginBottom: 12 }}>
+          <div style={{ ...S.row, marginBottom: 8 }}>
             <div style={{ fontWeight: 700 }}>Draft order:</div>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", minWidth: 0 }}>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               {orderNames.map((name, i) => {
                 const n = orderNames.length;
                 const curIdx = currentIndex(turn, n);
@@ -553,223 +494,45 @@ function Home() {
                 );
               })}
             </div>
-            <label
-              style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14 }}
-            >
-              <input
-                type="checkbox"
-                checked={snake}
-                onChange={(e) => toggleSnake(e.target.checked)}
-              />{" "}
-              Snake
+            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14 }}>
+              <input type="checkbox" checked={snake} onChange={(e) => toggleSnake(e.target.checked)} /> Snake
             </label>
             <button style={S.btn} onClick={shuffleOrder}>
               Shuffle
             </button>
             <div style={{ fontSize: 12, opacity: 0.9 }}>
-              Turn: <b>{turn + 1}</b> • Current: <b>{currentPlayerName || "…"}</b>{" "}
-              {isMyTurn ? " (your turn)" : ""}
+              Turn: <b>{turn + 1}</b> • Current: <b>{currentPlayerName || "…"}</b> {isMyTurn ? " (your turn)" : ""}
             </div>
           </div>
-
-          {/* Filters (collapsible) */}
-          <section
-            id="filters-section"
-            className={`filtersWrap ${filtersOpen ? "open" : "closed"}`}
-            aria-hidden={!filtersOpen}
-            style={{ width: "100%", minWidth: 0 }}
-          >
-            <div className="filtersGrid" style={{ width: "100%", minWidth: 0 }}>
-              <input
-                className="input"
-                style={{ ...S.input, width: "100%" }}
-                placeholder="Search opponent..."
-                value={filter.q}
-                onChange={(e) => setFilter({ ...filter, q: e.target.value })}
-              />
-              <select
-                className="input"
-                style={{ ...S.input, width: "100%" } as React.CSSProperties}
-                value={filter.tier}
-                onChange={(e) => setFilter({ ...filter, tier: e.target.value })}
-              >
-                <option value="">All tiers</option>
-                {TIERS.map((t) => (
-                  <option key={t}>{t}</option>
-                ))}
-              </select>
-              <select
-                className="input"
-                style={{ ...S.input, width: "100%" } as React.CSSProperties}
-                value={filter.dow}
-                onChange={(e) => setFilter({ ...filter, dow: e.target.value })}
-              >
-                <option value="">Any day</option>
-                {DOW.map((d) => (
-                  <option key={d}>{d}</option>
-                ))}
-              </select>
-              <input
-                className="input"
-                style={{ ...S.input, width: "100%" }}
-                placeholder="Max $"
-                value={filter.max}
-                onChange={(e) => setFilter({ ...filter, max: e.target.value })}
-              />
-              <input
-                className="input"
-                style={{ ...S.input, width: "100%" }}
-                placeholder="Min $"
-                value={filter.min}
-                onChange={(e) => setFilter({ ...filter, min: e.target.value })}
-              />
-              <div style={{ alignSelf: "center", fontSize: 12, opacity: 0.85 }}>
-                Current: <b>{currentPlayerName || "…"}</b>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        {/* Edit order */}
-        <div className="card" style={{ ...S.card, marginBottom: 12 }}>
-          <div style={{ ...S.row, marginBottom: 8 }}>
-            <div style={{ fontWeight: 800 }}>Edit draft order</div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button className="btn" style={S.btn} onClick={resetAlphabetical}>
-                Reset A→Z
-              </button>
-              <button className="btn" style={S.btn} onClick={shuffleOrder}>
-                Shuffle
-              </button>
-            </div>
-          </div>
-          <ol style={{ display: "grid", gap: 8, margin: 0, paddingLeft: 16 }}>
-            {orderNames.map((name, i) => (
-              <li
-                key={name}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  background: "#1f2937",
-                  borderRadius: 10,
-                  padding: 8,
-                  fontSize: 12,
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span
-                    style={{
-                      padding: "4px 8px",
-                      borderRadius: 10,
-                      background: "#334155",
-                      fontWeight: 800,
-                    }}
-                  >
-                    {i + 1}
-                  </span>
-                  <span style={{ fontWeight: 700 }}>{name}</span>
-                </div>
-                <div style={{ display: "flex", gap: 8 }}>
-                  <button className="btn" style={S.btn} onClick={() => setNameAsFirst(i)}>
-                    First
-                  </button>
-                  <button
-                    className="btn"
-                    style={S.btn}
-                    onClick={() => moveName(i, -1)}
-                    disabled={i === 0}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    className="btn"
-                    style={S.btn}
-                    onClick={() => moveName(i, +1)}
-                    disabled={i === orderNames.length - 1}
-                  >
-                    ↓
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ol>
         </div>
 
         {/* Add game (collapsible) */}
         <div className="card" style={{ ...S.card, marginBottom: 12 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
             <div style={{ fontWeight: 800 }}>Add Game</div>
-            <button
-              className="btn"
-              style={S.btn}
-              aria-expanded={addOpen}
-              aria-controls="add-section"
-              onClick={() => setAddOpen((v) => !v)}
-            >
+            <button className="btn" style={S.btn} aria-expanded={addOpen} aria-controls="add-section" onClick={() => setAddOpen((v) => !v)}>
               {addOpen ? "Hide" : "Show"}
             </button>
           </div>
 
-          <section
-            id="add-section"
-            className={`collapsible ${addOpen ? "open" : "closed"}`}
-            aria-hidden={!addOpen}
-          >
-            <div
-              className="addGameGrid"
-              style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8, marginTop: 8 }}
-            >
-              <input
-                className="input"
-                style={S.input}
-                placeholder="Date (MM/DD/YYYY)"
-                value={newGame.Date}
-                onChange={(e) => setNewGame({ ...newGame, Date: e.target.value })}
-              />
-              <input
-                className="input"
-                style={S.input}
-                placeholder="Time (e.g. 7:30 PM)"
-                value={newGame.Time}
-                onChange={(e) => setNewGame({ ...newGame, Time: e.target.value })}
-              />
-              <select
-                className="input"
-                style={S.input as React.CSSProperties}
-                value={newGame.Day}
-                onChange={(e) => setNewGame({ ...newGame, Day: e.target.value })}
-              >
+          <section id="add-section" className={`collapsible ${addOpen ? "open" : "closed"}`} aria-hidden={!addOpen}>
+            <div className="addGameGrid" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8, marginTop: 8 }}>
+              <input className="input" style={S.input} placeholder="Date (MM/DD/YYYY)" value={newGame.Date} onChange={(e) => setNewGame({ ...newGame, Date: e.target.value })} />
+              <input className="input" style={S.input} placeholder="Time (e.g. 7:30 PM)" value={newGame.Time} onChange={(e) => setNewGame({ ...newGame, Time: e.target.value })} />
+              <select className="input" style={S.input as React.CSSProperties} value={newGame.Day} onChange={(e) => setNewGame({ ...newGame, Day: e.target.value })}>
                 <option value="">Day</option>
                 {DOW.map((d) => (
                   <option key={d}>{d}</option>
                 ))}
               </select>
-              <input
-                className="input"
-                style={S.input}
-                placeholder="Opponent"
-                value={newGame.Opponent}
-                onChange={(e) => setNewGame({ ...newGame, Opponent: e.target.value })}
-              />
-              <select
-                className="input"
-                style={S.input as React.CSSProperties}
-                value={newGame.Tier}
-                onChange={(e) => setNewGame({ ...newGame, Tier: e.target.value })}
-              >
+              <input className="input" style={S.input} placeholder="Opponent" value={newGame.Opponent} onChange={(e) => setNewGame({ ...newGame, Opponent: e.target.value })} />
+              <select className="input" style={S.input as React.CSSProperties} value={newGame.Tier} onChange={(e) => setNewGame({ ...newGame, Tier: e.target.value })}>
                 <option value="">Tier</option>
                 {TIERS.map((t) => (
                   <option key={t}>{t}</option>
                 ))}
               </select>
-              <input
-                className="input"
-                style={S.input}
-                placeholder="Price"
-                value={newGame.Price}
-                onChange={(e) => setNewGame({ ...newGame, Price: e.target.value })}
-              />
+              <input className="input" style={S.input} placeholder="Price" value={newGame.Price} onChange={(e) => setNewGame({ ...newGame, Price: e.target.value })} />
               <button className="btnPrimary" style={S.btnP} onClick={addGame}>
                 Add
               </button>
@@ -779,12 +542,40 @@ function Home() {
 
         {/* Main grid */}
         <div className="mainGrid" style={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: 12 }}>
-          {/* LEFT: games table */}
+          {/* LEFT: filters + games table */}
           <div className="card" style={S.card}>
-            <div
-              className="tableWrap"
-              style={{ overflow: "auto", maxHeight: "60vh", border: "1px solid #1f2937", borderRadius: 12 }}
-            >
+            {/* Filters moved here, right above table */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
+              <div style={{ fontWeight: 800 }}>Filters</div>
+              <button className="btn" style={S.btn} aria-expanded={filtersOpen} aria-controls="filters-section" onClick={() => setFiltersOpen((v) => !v)}>
+                {filtersOpen ? "Hide" : "Show"}
+              </button>
+            </div>
+
+            <section id="filters-section" className={`filtersWrap ${filtersOpen ? "open" : "closed"}`} aria-hidden={!filtersOpen} style={{ width: "100%", minWidth: 0 }}>
+              <div className="filtersGrid" style={{ width: "100%", minWidth: 0, marginBottom: 8 }}>
+                <input className="input" style={{ ...S.input, width: "100%" }} placeholder="Search opponent..." value={filter.q} onChange={(e) => setFilter({ ...filter, q: e.target.value })} />
+                <select className="input" style={{ ...S.input, width: "100%" } as React.CSSProperties} value={filter.tier} onChange={(e) => setFilter({ ...filter, tier: e.target.value })}>
+                  <option value="">All tiers</option>
+                  {TIERS.map((t) => (
+                    <option key={t}>{t}</option>
+                  ))}
+                </select>
+                <select className="input" style={{ ...S.input, width: "100%" } as React.CSSProperties} value={filter.dow} onChange={(e) => setFilter({ ...filter, dow: e.target.value })}>
+                  <option value="">Any day</option>
+                  {DOW.map((d) => (
+                    <option key={d}>{d}</option>
+                  ))}
+                </select>
+                <input className="input" style={{ ...S.input, width: "100%" }} placeholder="Max $" value={filter.max} onChange={(e) => setFilter({ ...filter, max: e.target.value })} />
+                <input className="input" style={{ ...S.input, width: "100%" }} placeholder="Min $" value={filter.min} onChange={(e) => setFilter({ ...filter, min: e.target.value })} />
+                <div style={{ alignSelf: "center", fontSize: 12, opacity: 0.85 }}>
+                  Current: <b>{currentPlayerName || "…"}</b>
+                </div>
+              </div>
+            </section>
+
+            <div className="tableWrap" style={{ overflow: "auto", maxHeight: "60vh", border: "1px solid #1f2937", borderRadius: 12 }}>
               <table className="gamesTable" style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}>
                 <thead>
                   <tr>
@@ -800,12 +591,7 @@ function Home() {
                 </thead>
                 <tbody>
                   {available.map((g, idx) => (
-                    <tr
-                      key={g.id}
-                      style={{
-                        background: idx % 2 ? "rgba(30,41,59,0.5)" : "rgba(2,6,23,0.2)",
-                      }}
-                    >
+                    <tr key={g.id} style={{ background: idx % 2 ? "rgba(30,41,59,0.5)" : "rgba(2,6,23,0.2)" }}>
                       <td style={S.td}>
                         <button className="btnPrimary" style={S.btnP} onClick={() => draft(g)}>
                           Draft
@@ -829,7 +615,7 @@ function Home() {
             </div>
           </div>
 
-          {/* RIGHT: picks by player */}
+          {/* RIGHT: picks by player (show Date • Opponent • Tier) */}
           <div className="picksCol" style={{ display: "grid", gap: 12 }}>
             {players.map((name) => (
               <div key={name} className="card" style={S.card}>
@@ -837,7 +623,7 @@ function Home() {
                 <ul style={{ display: "grid", gap: 8, margin: 0, paddingLeft: 16 }}>
                   {(picks[name] || []).map((p, i) => (
                     <li key={i} style={{ background: "#1f2937", borderRadius: 10, padding: 8, fontSize: 12 }}>
-                      {p.Date} • {p.Opponent} • ${p.Price}
+                      {p.Date} • {p.Opponent} • {p.Tier}
                     </li>
                   ))}
                 </ul>
@@ -847,13 +633,12 @@ function Home() {
         </div>
       </div>
 
-      {/* Responsive tweaks */}
+      {/* Responsive + collapsible CSS */}
       <style jsx global>{`
         .tableWrap {
           overflow-x: auto;
         }
 
-        /* Collapsible helpers */
         .filtersGrid {
           display: grid;
           grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -892,10 +677,8 @@ function Home() {
           .tableWrap {
             max-height: 52vh !important;
           }
-
-          /* Filters: 2 columns on tablets */
           .filtersGrid {
-            grid-template-columns: 1fr 1fr !important;
+            grid-template-columns: 1fr 1fr !important; /* 2 cols on tablets */
           }
         }
 
@@ -910,10 +693,8 @@ function Home() {
           .gamesTable td {
             padding: 6px 8px !important;
           }
-
-          /* Filters: 1 column on phones */
           .filtersGrid {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: 1fr !important; /* 1 col on phones */
           }
         }
       `}</style>
