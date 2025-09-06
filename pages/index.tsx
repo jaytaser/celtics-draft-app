@@ -500,7 +500,14 @@ function Home() {
       </div>
 
            {/* Main grid (2 columns on desktop, 1 on mobile) */}
-      <div className="mainGrid" style={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: 12 }}>
+<div
+  className="mainGrid"
+  style={{
+    display: "grid",
+    gridTemplateColumns: window.innerWidth < 768 ? "1fr" : "3fr 1fr",
+    gap: 12,
+  }}
+>
         {/* LEFT: games table */}
         <div className="card" style={S.card}>
           <div className="tableWrap" style={{ overflow: "auto", maxHeight: "60vh", border: "1px solid #1f2937", borderRadius: 12 }}>
