@@ -566,4 +566,30 @@ function Home() {
   );
 }
 
+async function changeMyName(newName: string) {
+  const roomCode = localStorage.getItem("room_code") || "";
+  const email = (localStorage.getItem("player_email") || "").toLowerCase();
+  const oldName = localStorage.getItem("player_name") || "";
+
+  if (!roomCode || !email || !newName.trim()) return;
+
+  await supabase.from("players")
+    .update({ name: newName })
+    .eq("room_code", roomCode)
+    .ilike("email", email);
+
+  const { data: roomRow } = await supabase
+    .from("rooms")
+    .select("draft_order")
+    .eq("code", roomCode)
+    .maybeSingle();
+
+  let order: string[] = Array.isArray(roomRow?.draft_order) ? roomRow!.draft_order as string[] : [];
+  order = order.map((n) => (n === oldName ? newName : n));
+  await supabase.from("rooms").update({ draft_order: order }).eq("code", roomCode);
+
+  localStorage.setItem("player_name", newName);
+}
+
+
 export default dynamic(() => Promise.resolve(Home), { ssr: false });
