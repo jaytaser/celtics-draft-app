@@ -499,7 +499,7 @@ function Home() {
         </div>
       </div>
 
-      {/* Main grid (2 columns on desktop, 1 on mobile) */}
+           {/* Main grid (2 columns on desktop, 1 on mobile) */}
       <div className="mainGrid" style={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: 12 }}>
         {/* LEFT: games table */}
         <div className="card" style={S.card}>
@@ -554,9 +554,9 @@ function Home() {
             </div>
           ))}
         </div>
-      </div> {/* end: mainGrid */}
-    </div>   {/* end: container */}
+      </div>
+    </div>
   );
-} // end: function Home
+}
 
 export default dynamic(() => Promise.resolve(Home), { ssr: false });
