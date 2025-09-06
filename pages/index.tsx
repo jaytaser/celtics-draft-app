@@ -138,6 +138,7 @@ function Home() {
     min: "",
     dow: "",
   });
+  const [filtersOpen, setFiltersOpen] = useState(true); // collapsible on mobile
 
   /** Add-game form */
   const [newGame, setNewGame] = useState({
@@ -187,10 +188,7 @@ function Home() {
       // initialize draft order if empty
       if (!room || !Array.isArray(room.draft_order) || room.draft_order.length === 0) {
         if (names.length >= 2) {
-          await supabase
-            .from("rooms")
-            .update({ draft_order: names })
-            .eq("code", roomCode);
+          await supabase.from("rooms").update({ draft_order: names }).eq("code", roomCode);
           setOrderNames(names);
         }
       }
@@ -483,7 +481,7 @@ function Home() {
             🏀 Celtics Ticket Draft
           </h1>
 
-          <div className="toolbar" style={{ display: "flex", gap: 8 }}>
+          <div className="toolbar" style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <select
               className="input"
               style={S.input as React.CSSProperties}
@@ -507,21 +505,32 @@ function Home() {
             <button className="btnPrimary" style={S.btnP} onClick={exportXLS}>
               Export XLS
             </button>
+
+            {/* Mobile-only toggle for filters */}
+            <button
+              className="btn mobileOnly"
+              style={{ ...S.btn, display: "none", marginLeft: "auto" }}
+              onClick={() => setFiltersOpen((v) => !v)}
+            >
+              {filtersOpen ? "Hide Filters" : "Show Filters"}
+            </button>
           </div>
         </div>
 
         {/* draft order + filters */}
-        <div style={{ ...S.card, ...S.row, marginBottom: 12 }}>
+        <div style={{ ...S.card, ...S.row, marginBottom: 12, width: "100%", minWidth: 0 }}>
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: 10,
               flexWrap: "wrap",
+              minWidth: 0,
+              width: "100%",
             }}
           >
             <div style={{ fontWeight: 700 }}>Draft order:</div>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", minWidth: 0 }}>
               {orderNames.map((name, i) => {
                 const n = orderNames.length;
                 const curIdx = currentIndex(turn, n);
@@ -546,64 +555,72 @@ function Home() {
               Shuffle
             </button>
             <div style={{ fontSize: 12, opacity: 0.9 }}>
-              Turn: <b>{turn + 1}</b> • Current:{" "}
-              <b>{currentPlayerName || "…"}</b> {isMyTurn ? " (your turn)" : ""}
+              Turn: <b>{turn + 1}</b> • Current: <b>{currentPlayerName || "…"}</b>{" "}
+              {isMyTurn ? " (your turn)" : ""}
             </div>
+
+            {/* Mobile Filters Toggle duplicated here for accessibility */}
+            <button
+              className="btn mobileOnly"
+              style={{ ...S.btn, display: "none", marginLeft: "auto" }}
+              onClick={() => setFiltersOpen((v) => !v)}
+            >
+              {filtersOpen ? "Hide Filters" : "Show Filters"}
+            </button>
           </div>
 
+          {/* Filters */}
           <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(6, 1fr)",
-              gap: 8,
-              width: "100%",
-            }}
+            className={`filtersWrap ${filtersOpen ? "open" : "closed"}`}
+            style={{ width: "100%", minWidth: 0 }}
           >
-            <input
-              className="input"
-              style={S.input}
-              placeholder="Search opponent..."
-              value={filter.q}
-              onChange={(e) => setFilter({ ...filter, q: e.target.value })}
-            />
-            <select
-              className="input"
-              style={S.input as React.CSSProperties}
-              value={filter.tier}
-              onChange={(e) => setFilter({ ...filter, tier: e.target.value })}
-            >
-              <option value="">All tiers</option>
-              {TIERS.map((t) => (
-                <option key={t}>{t}</option>
-              ))}
-            </select>
-            <select
-              className="input"
-              style={S.input as React.CSSProperties}
-              value={filter.dow}
-              onChange={(e) => setFilter({ ...filter, dow: e.target.value })}
-            >
-              <option value="">Any day</option>
-              {DOW.map((d) => (
-                <option key={d}>{d}</option>
-              ))}
-            </select>
-            <input
-              className="input"
-              style={S.input}
-              placeholder="Max $"
-              value={filter.max}
-              onChange={(e) => setFilter({ ...filter, max: e.target.value })}
-            />
-            <input
-              className="input"
-              style={S.input}
-              placeholder="Min $"
-              value={filter.min}
-              onChange={(e) => setFilter({ ...filter, min: e.target.value })}
-            />
-            <div style={{ alignSelf: "center", fontSize: 12, opacity: 0.85 }}>
-              Current: <b>{currentPlayerName || "…"}</b>
+            <div className="filtersGrid" style={{ width: "100%", minWidth: 0 }}>
+              <input
+                className="input"
+                style={{ ...S.input, width: "100%" }}
+                placeholder="Search opponent..."
+                value={filter.q}
+                onChange={(e) => setFilter({ ...filter, q: e.target.value })}
+              />
+              <select
+                className="input"
+                style={{ ...S.input, width: "100%" } as React.CSSProperties}
+                value={filter.tier}
+                onChange={(e) => setFilter({ ...filter, tier: e.target.value })}
+              >
+                <option value="">All tiers</option>
+                {TIERS.map((t) => (
+                  <option key={t}>{t}</option>
+                ))}
+              </select>
+              <select
+                className="input"
+                style={{ ...S.input, width: "100%" } as React.CSSProperties}
+                value={filter.dow}
+                onChange={(e) => setFilter({ ...filter, dow: e.target.value })}
+              >
+                <option value="">Any day</option>
+                {DOW.map((d) => (
+                  <option key={d}>{d}</option>
+                ))}
+              </select>
+              <input
+                className="input"
+                style={{ ...S.input, width: "100%" }}
+                placeholder="Max $"
+                value={filter.max}
+                onChange={(e) => setFilter({ ...filter, max: e.target.value })}
+              />
+              <input
+                className="input"
+                style={{ ...S.input, width: "100%" }}
+                placeholder="Min $"
+                value={filter.min}
+                onChange={(e) => setFilter({ ...filter, min: e.target.value })}
+              />
+              <div style={{ alignSelf: "center", fontSize: 12, opacity: 0.85 }}>
+                Current: <b>{currentPlayerName || "…"}</b>
+              </div>
             </div>
           </div>
         </div>
@@ -812,6 +829,20 @@ function Home() {
         .tableWrap {
           overflow-x: auto;
         }
+
+        /* Filters responsive grid + collapse */
+        .filtersGrid {
+          display: grid;
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+          gap: 8px;
+        }
+        .filtersWrap.closed {
+          display: none;
+        }
+        .mobileOnly {
+          display: none !important;
+        }
+
         @media (max-width: 900px) {
           .mainGrid {
             grid-template-columns: 1fr !important;
@@ -840,7 +871,18 @@ function Home() {
           .tableWrap {
             max-height: 52vh !important;
           }
+
+          /* Filters: 2 columns on tablets */
+          .filtersGrid {
+            grid-template-columns: 1fr 1fr !important;
+          }
+
+          /* Show mobile-only buttons */
+          .mobileOnly {
+            display: inline-block !important;
+          }
         }
+
         @media (max-width: 520px) {
           .addGameGrid {
             grid-template-columns: 1fr !important;
@@ -851,6 +893,11 @@ function Home() {
           .gamesTable th,
           .gamesTable td {
             padding: 6px 8px !important;
+          }
+
+          /* Filters: 1 column on phones */
+          .filtersGrid {
+            grid-template-columns: 1fr !important;
           }
         }
       `}</style>
