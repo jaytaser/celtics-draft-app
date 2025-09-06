@@ -577,10 +577,4 @@ function Home() {
   ))}
 </div>
 
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 export default dynamic(() => Promise.resolve(Home), { ssr: false });
