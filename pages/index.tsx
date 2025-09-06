@@ -499,6 +499,37 @@ function Home() {
         </div>
       </div>
 
+ <style jsx global>{`
+    .tableWrap { overflow-x: auto; }
+
+    @media (max-width: 900px) {
+      .mainGrid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      .picksCol { margin-top: 12px; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 8px !important; }
+      .toolbar .input,
+      .toolbar select,
+      .toolbar button {
+        width: 100% !important;
+      }
+      .card { padding: 12px !important; }
+      .addGameGrid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+      }
+      .tableWrap { max-height: 52vh !important; }
+    }
+
+    @media (max-width: 520px) {
+      .addGameGrid { grid-template-columns: 1fr !important; }
+      .gamesTable { font-size: 12px !important; }
+      .gamesTable th, .gamesTable td { padding: 6px 8px !important; }
+    }
+  `}</style>
+);
+      
            {/* Main grid (2 columns on desktop, 1 on mobile) */}
 <div
   className="mainGrid"
@@ -547,8 +578,8 @@ function Home() {
         </div>
 
         {/* RIGHT: picks by player */}
-        <div style={{ display: "grid", gap: 12 }}>
-          {players.map((name) => (
+<div className="picksCol" style={{ display: "grid", gap: 12 }}>
+  {players.map((name) => (
             <div key={name} className="card" style={S.card}>
               <div style={{ fontWeight: 800, marginBottom: 8 }}>{name}</div>
               <ul style={{ display: "grid", gap: 8, margin: 0, paddingLeft: 16 }}>
