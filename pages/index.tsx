@@ -368,25 +368,44 @@ function Home() {
 
   /** ---------- Render ---------- */
   return (
-    <div style={S.page}>
-      {/* top bar */}
-      <div style={{ ...S.row, marginBottom: 12 }}>
-        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>🏀 Celtics Ticket Draft</h1>
-        <div style={{ display: "flex", gap: 8 }}>
-          <select style={S.input as React.CSSProperties} value={season} onChange={(e) => setSeason(e.target.value)}>
-            {SEASONS.map((s) => (
-              <option key={s}>{s}</option>
-            ))}
-          </select>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <div style={{ fontSize: 12, opacity: 0.85 }}>
-              Room: <b>{roomCode || "…"}</b> • You: <b>{myName || "…"}</b>
-            </div>
+  <div className="container" style={S.page}>
+    {/* top bar */}
+    <div className="toolbar" style={{ ...S.row, marginBottom: 12 }}>
+      <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>
+        🏀 Celtics Ticket Draft
+      </h1>
+      <div className="toolbar" style={{ display: "flex", gap: 8 }}>
+        <select
+          className="input"
+          style={S.input as React.CSSProperties}
+          value={season}
+          onChange={(e) => setSeason(e.target.value)}
+        >
+          {SEASONS.map((s) => (
+            <option key={s}>{s}</option>
+          ))}
+        </select>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <div style={{ fontSize: 12, opacity: 0.85 }}>
+            Room: <b>{roomCode || "…"}</b> • You: <b>{myName || "…"}</b>
           </div>
-          <button style={S.btnP} onClick={exportCSV}>Export CSV</button>
-          <button style={S.btnP} onClick={exportXLS}>Export XLS</button>
         </div>
+        <button
+          className="btnPrimary"
+          style={S.btnP}
+          onClick={exportCSV}
+        >
+          Export CSV
+        </button>
+        <button
+          className="btnPrimary"
+          style={S.btnP}
+          onClick={exportXLS}
+        >
+          Export XLS
+        </button>
       </div>
+    </div>
 
       {/* draft order + filters */}
       <div style={{ ...S.card, ...S.row, marginBottom: 12 }}>
@@ -471,85 +490,93 @@ function Home() {
         </ol>
       </div>
 
-      {/* Add game */}
-      <div style={{ ...S.card, marginBottom: 12 }}>
-        <div style={{ fontWeight: 800, marginBottom: 8 }}>Add Game</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8 }}>
-          <input style={S.input} placeholder="Date (MM/DD/YYYY)" value={newGame.Date} onChange={(e) => setNewGame({ ...newGame, Date: e.target.value })} />
-          <input style={S.input} placeholder="Time (e.g. 7:30 PM)" value={newGame.Time} onChange={(e) => setNewGame({ ...newGame, Time: e.target.value })} />
-          <select style={S.input as React.CSSProperties} value={newGame.Day} onChange={(e) => setNewGame({ ...newGame, Day: e.target.value })}>
-            <option value="">Day</option>
-            {DOW.map((d) => (
-              <option key={d}>{d}</option>
-            ))}
-          </select>
-          <input style={S.input} placeholder="Opponent" value={newGame.Opponent} onChange={(e) => setNewGame({ ...newGame, Opponent: e.target.value })} />
-          <select style={S.input as React.CSSProperties} value={newGame.Tier} onChange={(e) => setNewGame({ ...newGame, Tier: e.target.value })}>
-            <option value="">Tier</option>
-            {TIERS.map((t) => (
-              <option key={t}>{t}</option>
-            ))}
-          </select>
-          <input style={S.input} placeholder="Price" value={newGame.Price} onChange={(e) => setNewGame({ ...newGame, Price: e.target.value })} />
-          <button style={S.btnP} onClick={addGame}>Add</button>
-        </div>
-      </div>
+{/* add game */}
+<div className="card" style={{ ...S.card, marginBottom: 12 }}>
+  <div style={{ fontWeight: 800, marginBottom: 8 }}>Add Game</div>
+  <div className="addGameGrid" style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8 }}>
+    <input className="input" style={S.input} placeholder="Date (MM/DD/YYYY)" value={newGame.Date} onChange={(e) => setNewGame({ ...newGame, Date: e.target.value })} />
+    <input className="input" style={S.input} placeholder="Time (e.g. 7:30 PM)" value={newGame.Time} onChange={(e) => setNewGame({ ...newGame, Time: e.target.value })} />
+    <select className="input" style={S.input as React.CSSProperties} value={newGame.Day} onChange={(e) => setNewGame({ ...newGame, Day: e.target.value })}>
+      <option value="">Day</option>
+      {DOW.map((d) => <option key={d}>{d}</option>)}
+    </select>
+    <input className="input" style={S.input} placeholder="Opponent" value={newGame.Opponent} onChange={(e) => setNewGame({ ...newGame, Opponent: e.target.value })} />
+    <select className="input" style={S.input as React.CSSProperties} value={newGame.Tier} onChange={(e) => setNewGame({ ...newGame, Tier: e.target.value })}>
+      <option value="">Tier</option>
+      {TIERS.map((t) => <option key={t}>{t}</option>)}
+    </select>
+    <input className="input" style={S.input} placeholder="Price" value={newGame.Price} onChange={(e) => setNewGame({ ...newGame, Price: e.target.value })} />
+    <button className="btnPrimary" style={S.btnP} onClick={addGame}>Add</button>
+  </div>
+</div>
+
 
       {/* Main grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: 12 }}>
-        {/* Games table */}
-        <div style={S.card}>
-          <div style={{ overflow: "auto", maxHeight: "60vh", border: "1px solid #1f2937", borderRadius: 12 }}>
-            <table style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}>
-              <thead>
-                <tr>
-                  <th style={S.th}>Pick</th>
-                  <th style={S.th}>Date</th>
-                  <th style={S.th}>Time</th>
-                  <th style={S.th}>Day</th>
-                  <th style={S.th}>Opponent</th>
-                  <th style={S.th}>Tier</th>
-                  <th style={S.th}>Price</th>
-                  <th style={S.th}>Remove</th>
-                </tr>
-              </thead>
-              <tbody>
-                {available.map((g, idx) => (
-                  <tr key={g.id} style={{ background: idx % 2 ? "rgba(30,41,59,0.5)" : "rgba(2,6,23,0.2)" }}>
-                    <td style={S.td}>
-                      <button style={{ ...S.btnP, opacity: isMyTurn ? 1 : 0.5, cursor: isMyTurn ? "pointer" : "not-allowed" }} disabled={!isMyTurn} onClick={() => draft(g)}>
-                        Draft
-                      </button>
-                    </td>
-                    <td style={S.td}>{g.Date}</td>
-                    <td style={S.td}>{g.Time}</td>
-                    <td style={S.td}>{g.Day}</td>
-                    <td style={S.td}>{g.Opponent}</td>
-                    <td style={S.td}>{g.Tier}</td>
-                    <td style={S.td}>${g.Price.toFixed(2)}</td>
-                    <td style={S.td}>
-                      <button style={S.btn} onClick={() => removeGame(g.id)}>Remove</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <div className="mainGrid" style={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: 12 }}>
+        
+{/* games table */}
+<div className="card" style={S.card}>
+  <div className="tableWrap" style={{ overflow: "auto", maxHeight: "60vh", border: "1px solid #1f2937", borderRadius: 12 }}>
+    <table className="gamesTable" style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}>
+      <thead>
+        <tr>
+          <th style={S.th}>Pick</th>
+          <th style={S.th}>Date</th>
+          <th style={S.th}>Time</th>
+          <th style={S.th}>Day</th>
+          <th style={S.th}>Opponent</th>
+          <th style={S.th}>Tier</th>
+          <th style={S.th}>Price</th>
+          <th style={S.th}>Remove</th>
+        </tr>
+      </thead>
+      <tbody>
+        {available.map((g, idx) => (
+          <tr key={g.id} style={{ background: idx % 2 ? "rgba(30,41,59,0.5)" : "rgba(2,6,23,0.2)" }}>
+            <td style={S.td}>
+              <button className="btnPrimary" style={S.btnP} onClick={() => draft(g)}>Draft</button>
+            </td>
+            <td style={S.td}>{g.Date}</td>
+            <td style={S.td}>{g.Time}</td>
+            <td style={S.td}>{g.Day}</td>
+            <td style={S.td}>{g.Opponent}</td>
+            <td style={S.td}>{g.Tier}</td>
+            <td style={S.td}>${g.Price.toFixed(2)}</td>
+            <td style={S.td}>
+              <button className="btn" style={S.btn} onClick={() => removeGame(g.id)}>Remove</button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
 
-        {/* Picks by player */}
-        <div style={{ display: "grid", gap: 12 }}>
-          {players.map((name) => (
-            <div key={name} style={S.card}>
-              <div style={{ fontWeight: 800, marginBottom: 8 }}>{name}</div>
-              <ul style={{ display: "grid", gap: 8, margin: 0, paddingLeft: 16 }}>
-                {(picks[name] || []).map((p, i) => (
-                  <li key={i} style={{ background: "#1f2937", borderRadius: 10, padding: 8, fontSize: 12 }}>
-                    {p.Date} • {p.Opponent} • ${p.Price}
-                  </li>
-                ))}
-              </ul>
-            </div>
+
+{/* Picks by player */}
+<div style={{ display: "grid", gap: 12 }}>
+  {players.map((name) => (
+    <div key={name} className="card" style={S.card}>
+      <div style={{ fontWeight: 800, marginBottom: 8 }}>{name}</div>
+      <ul style={{ display: "grid", gap: 8, margin: 0, paddingLeft: 16 }}>
+        {(picks[name] || []).map((p, i) => (
+          <li
+            key={i}
+            style={{
+              background: "#1f2937",
+              borderRadius: 10,
+              padding: 8,
+              fontSize: 12,
+            }}
+          >
+            {p.Date} • {p.Opponent} • ${p.Price}
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>
+
           ))}
         </div>
       </div>
