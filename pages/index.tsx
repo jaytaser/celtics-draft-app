@@ -576,5 +576,11 @@ function Home() {
     </div>
   ))}
 </div>
+      </div>   {/* end: right column */}
+    </div>     {/* end: mainGrid */}
+  </div>       {/* end: container */}
+);
+}              // end: function Home
+
 
 export default dynamic(() => Promise.resolve(Home), { ssr: false });
