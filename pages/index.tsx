@@ -499,12 +499,7 @@ async function removeGame(id: number) {
               Export XLS
             </button>
 
-            {/* Collapsible toggles */}
-            <button className="btn" style={S.btn} aria-expanded={addOpen} aria-controls="add-section" onClick={() => setAddOpen((v) => !v)}>
-              {addOpen ? "Hide Add Game" : "Show Add Game"}
-            </button>
-          </div>
-        </div>
+
 
         {/* draft order (filters moved lower) */}
         <div className="card" style={{ ...S.card, marginBottom: 12 }}>
