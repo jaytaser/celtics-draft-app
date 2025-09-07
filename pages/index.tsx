@@ -473,7 +473,7 @@ async function removeGame(id: number) {
   <img 
     src="/joe.png" 
     alt="Joe Mazzulla" 
-    style={{ width: 40, height: 40, borderRadius: "50%" }} 
+    style={{ width: 80, height: 80, borderRadius: "50%" }} 
   />
   Celtics Ticket Draft
 </h1>
