@@ -132,7 +132,7 @@ function Home() {
 
   
   /** Filters (collapsed by default) */
-  const [filter, setFilter] = useState({ q: "", tier: "", max: "", min: "", dow: "" });
+  const [filter, setFilter] = useState({ q: "", tier: "", dow: "" });
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   /** Add-game form (collapsed by default) */
@@ -264,8 +264,6 @@ function Home() {
       .filter((g) => (filter.tier ? g.Tier === filter.tier : true))
       .filter((g) => (filter.dow ? g.Day === filter.dow : true))
       .filter((g) => (filter.q ? g.Opponent.toLowerCase().includes(filter.q.toLowerCase()) : true))
-      .filter((g) => (filter.max ? g.Price <= Number(filter.max) : true))
-      .filter((g) => (filter.min ? g.Price >= Number(filter.min) : true));
 
   }, [games, filter]);
 
@@ -499,7 +497,12 @@ async function removeGame(id: number) {
               Export XLS
             </button>
 
-
+            {/* Collapsible toggles */}
+            <button className="btn" style={S.btn} aria-expanded={addOpen} aria-controls="add-section" onClick={() => setAddOpen((v) => !v)}>
+              {addOpen ? "Hide Add Game" : "Show Add Game"}
+            </button>
+          </div>
+        </div>
 
         {/* draft order (filters moved lower) */}
         <div className="card" style={{ ...S.card, marginBottom: 12 }}>
@@ -651,28 +654,48 @@ async function removeGame(id: number) {
               </button>
             </div>
 
-            <section id="filters-section" className={`filtersWrap ${filtersOpen ? "open" : "closed"}`} aria-hidden={!filtersOpen} style={{ width: "100%", minWidth: 0 }}>
-              <div className="filtersGrid" style={{ width: "100%", minWidth: 0, marginBottom: 8 }}>
-                <input className="input" style={{ ...S.input, width: "100%" }} placeholder="Search opponent..." value={filter.q} onChange={(e) => setFilter({ ...filter, q: e.target.value })} />
-                <select className="input" style={{ ...S.input, width: "100%" } as React.CSSProperties} value={filter.tier} onChange={(e) => setFilter({ ...filter, tier: e.target.value })}>
-                  <option value="">All tiers</option>
-                  {TIERS.map((t) => (
-                    <option key={t}>{t}</option>
-                  ))}
-                </select>
-                <select className="input" style={{ ...S.input, width: "100%" } as React.CSSProperties} value={filter.dow} onChange={(e) => setFilter({ ...filter, dow: e.target.value })}>
-                  <option value="">Any day</option>
-                  {DOW.map((d) => (
-                    <option key={d}>{d}</option>
-                  ))}
-                </select>
-                <input className="input" style={{ ...S.input, width: "100%" }} placeholder="Max $" value={filter.max} onChange={(e) => setFilter({ ...filter, max: e.target.value })} />
-                <input className="input" style={{ ...S.input, width: "100%" }} placeholder="Min $" value={filter.min} onChange={(e) => setFilter({ ...filter, min: e.target.value })} />
-                <div style={{ alignSelf: "center", fontSize: 12, opacity: 0.85 }}>
-                  Current: <b>{currentPlayerName || "…"}</b>
-                </div>
-              </div>
-            </section>
+<section
+  id="filters-section"
+  className={`filtersWrap ${filtersOpen ? "open" : "closed"}`}
+  aria-hidden={!filtersOpen}
+  style={{ width: "100%", minWidth: 0 }}
+>
+  <div className="filtersGrid" style={{ width: "100%", minWidth: 0, marginBottom: 8 }}>
+    <input
+      className="input"
+      style={{ ...S.input, width: "100%" }}
+      placeholder="Search opponent..."
+      value={filter.q}
+      onChange={(e) => setFilter({ ...filter, q: e.target.value })}
+    />
+    <select
+      className="input"
+      style={{ ...S.input, width: "100%" } as React.CSSProperties}
+      value={filter.tier}
+      onChange={(e) => setFilter({ ...filter, tier: e.target.value })}
+    >
+      <option value="">All tiers</option>
+      {TIERS.map((t) => (
+        <option key={t}>{t}</option>
+      ))}
+    </select>
+    <select
+      className="input"
+      style={{ ...S.input, width: "100%" } as React.CSSProperties}
+      value={filter.dow}
+      onChange={(e) => setFilter({ ...filter, dow: e.target.value })}
+    >
+      <option value="">Any day</option>
+      {DOW.map((d) => (
+        <option key={d}>{d}</option>
+      ))}
+    </select>
+    <div style={{ alignSelf: "center", fontSize: 12, opacity: 0.85 }}>
+      Current: <b>{currentPlayerName || "…"}</b>
+    </div>
+  </div>
+</section>
+
 
             <div className="tableWrap" style={{ overflow: "auto", maxHeight: "60vh", border: "1px solid #1f2937", borderRadius: 12 }}>
               <table className="gamesTable" style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}>
