@@ -498,9 +498,7 @@ async function removeGame(id: number) {
             </button>
 
             {/* Collapsible toggles */}
-            <button className="btn" style={S.btn} aria-expanded={addOpen} aria-controls="add-section" onClick={() => setAddOpen((v) => !v)}>
-              {addOpen ? "Hide Add Game" : "Show Add Game"}
-            </button>
+
           </div>
         </div>
 
