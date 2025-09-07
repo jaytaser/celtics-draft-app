@@ -761,11 +761,21 @@ async function removeGame(id: number) {
           overflow-x: auto;
         }
 
-        .filtersGrid {
-          display: grid;
-          grid-template-columns: repeat(6, minmax(0, 1fr));
-          gap: 8px;
-        }
+.filtersGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)); /* q, tier, dow, current */
+  gap: 8px;
+}
+@media (max-width: 900px) {
+  .filtersGrid {
+    grid-template-columns: 1fr 1fr !important; /* 2 cols on tablets */
+  }
+}
+@media (max-width: 520px) {
+  .filtersGrid {
+    grid-template-columns: 1fr !important; /* 1 col on phones */
+  }
+}
         .filtersWrap.closed,
         .collapsible.closed {
           display: none;
