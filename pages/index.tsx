@@ -23,7 +23,7 @@ type Game = {
 
 /** ---------- Constants ---------- */
 const DOW = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-const TIERS = ["Platinum", "Gold", "Green", "White", "Gray", "Gray (Preseason)];
+const TIERS = ["Platinum", "Gold", "Green", "White", "Gray", "Gray (Preseason)"];
 const SEASONS = ["2025-26"];
 
 /** ---------- Styles ---------- */
