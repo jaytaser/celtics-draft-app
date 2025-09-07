@@ -130,83 +130,6 @@ function Home() {
   const [orderNames, setOrderNames] = useState<string[]>([]);
   const [showAdjuster, setShowAdjuster] = useState(false);
 
-{/* Draft order adjuster (collapsible) */}
-<div className="card" style={{ ...S.card, marginBottom: 12 }}>
-  <button
-    className="btn"
-    style={{ ...S.btn, width: "100%", textAlign: "left" }}
-    onClick={() => setShowAdjuster((v) => !v)}
-  >
-    {showAdjuster ? "Hide Draft Order Adjuster" : "Show Draft Order Adjuster"}
-  </button>
-  {showAdjuster && (
-    <div style={{ marginTop: 12 }}>
-      <div style={{ ...S.row, marginBottom: 8 }}>
-        <div style={{ fontWeight: 800 }}>Edit draft order</div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <button className="btn" style={S.btn} onClick={resetAlphabetical}>
-            Reset A→Z
-          </button>
-          <button className="btn" style={S.btn} onClick={shuffleOrder}>
-            Shuffle
-          </button>
-        </div>
-      </div>
-      <ol style={{ display: "grid", gap: 8, margin: 0, paddingLeft: 16 }}>
-        {orderNames.map((name, i) => (
-          <li
-            key={name}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              background: "#1f2937",
-              borderRadius: 10,
-              padding: 8,
-              fontSize: 12,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span
-                style={{
-                  padding: "4px 8px",
-                  borderRadius: 10,
-                  background: "#334155",
-                  fontWeight: 800,
-                }}
-              >
-                {i + 1}
-              </span>
-              <span style={{ fontWeight: 700 }}>{name}</span>
-            </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button className="btn" style={S.btn} onClick={() => setNameAsFirst(i)}>
-                First
-              </button>
-              <button
-                className="btn"
-                style={S.btn}
-                onClick={() => moveName(i, -1)}
-                disabled={i === 0}
-              >
-                ↑
-              </button>
-              <button
-                className="btn"
-                style={S.btn}
-                onClick={() => moveName(i, +1)}
-                disabled={i === orderNames.length - 1}
-              >
-                ↓
-              </button>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </div>
-  )}
-</div>
-
   
   /** Filters (collapsed by default) */
   const [filter, setFilter] = useState({ q: "", tier: "", max: "", min: "", dow: "" });
@@ -586,6 +509,83 @@ function Home() {
           </div>
         </div>
 
+{/* Draft order adjuster (collapsible) */}
+<div className="card" style={{ ...S.card, marginBottom: 12 }}>
+  <button
+    className="btn"
+    style={{ ...S.btn, width: "100%", textAlign: "left" }}
+    onClick={() => setShowAdjuster((v) => !v)}
+  >
+    {showAdjuster ? "Hide Draft Order Adjuster" : "Show Draft Order Adjuster"}
+  </button>
+  {showAdjuster && (
+    <div style={{ marginTop: 12 }}>
+      <div style={{ ...S.row, marginBottom: 8 }}>
+        <div style={{ fontWeight: 800 }}>Edit draft order</div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button className="btn" style={S.btn} onClick={resetAlphabetical}>
+            Reset A→Z
+          </button>
+          <button className="btn" style={S.btn} onClick={shuffleOrder}>
+            Shuffle
+          </button>
+        </div>
+      </div>
+      <ol style={{ display: "grid", gap: 8, margin: 0, paddingLeft: 16 }}>
+        {orderNames.map((name, i) => (
+          <li
+            key={name}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              background: "#1f2937",
+              borderRadius: 10,
+              padding: 8,
+              fontSize: 12,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span
+                style={{
+                  padding: "4px 8px",
+                  borderRadius: 10,
+                  background: "#334155",
+                  fontWeight: 800,
+                }}
+              >
+                {i + 1}
+              </span>
+              <span style={{ fontWeight: 700 }}>{name}</span>
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button className="btn" style={S.btn} onClick={() => setNameAsFirst(i)}>
+                First
+              </button>
+              <button
+                className="btn"
+                style={S.btn}
+                onClick={() => moveName(i, -1)}
+                disabled={i === 0}
+              >
+                ↑
+              </button>
+              <button
+                className="btn"
+                style={S.btn}
+                onClick={() => moveName(i, +1)}
+                disabled={i === orderNames.length - 1}
+              >
+                ↓
+              </button>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  )}
+</div>
+        
         {/* Add game (collapsible) */}
         <div className="card" style={{ ...S.card, marginBottom: 12 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
