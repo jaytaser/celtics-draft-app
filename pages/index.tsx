@@ -311,35 +311,45 @@ function Home() {
     persistOrder(arr);
   }
 
-  /** ---------- Draft op ---------- */
-  async function draft(game: Game) {
-    if (!isMyTurn) {
-      alert(`Not your turn. Current: ${currentPlayerName || "?"}`);
-      return;
-    }
+  /** ---------- Draft op with guard ---------- */
+async function draft(game: Game) {
+  // confirm
+  const ok = window.confirm(
+    `Draft this game?\n\n${game.Date} • ${game.Opponent} • $${game.Price.toFixed(2)}`
+  );
+  if (!ok) return;
 
-    const { data, error } = await supabase
-      .from("games")
-      .update({ picked_by: myName })
-      .eq("room_code", roomCode)
-      .eq("id", game.id)
-      .is("picked_by", null)
-      .select("id");
-
-    if (error) {
-      console.error(error);
-      alert("Could not draft this game. Try again.");
-      return;
-    }
-    if (!data || data.length === 0) {
-      alert("This game was just taken.");
-      return;
-    }
-
-    const nextTurn = turn + 1;
-    setTurn(nextTurn);
-    await supabase.from("rooms").update({ turn: nextTurn }).eq("code", roomCode);
+  // guard: only current player can draft
+  if (!isMyTurn) {
+    alert(`Not your turn. Current: ${currentPlayerName || "?"}`);
+    return;
   }
+
+  // try to claim the game atomically: only if not picked yet
+  const { data, error } = await supabase
+    .from("games")
+    .update({ picked_by: myName })
+    .eq("room_code", roomCode)
+    .eq("id", game.id)
+    .is("picked_by", null) // prevents stealing already-picked rows
+    .select("id");
+
+  if (error) {
+    console.error(error);
+    alert("Could not draft this game. Try again.");
+    return;
+  }
+  if (!data || data.length === 0) {
+    alert("This game was just taken.");
+    return;
+  }
+
+  // advance turn on server
+  const nextTurn = turn + 1;
+  setTurn(nextTurn); // optimistic
+  await supabase.from("rooms").update({ turn: nextTurn }).eq("code", roomCode);
+}
+
 
   /** ---------- Add / Remove ---------- */
   async function addGame() {
@@ -359,9 +369,15 @@ function Home() {
     setNewGame({ Date: "", Time: "", Day: "", Opponent: "", Tier: "", Price: "" });
   }
 
-  async function removeGame(id: number) {
-    await supabase.from("games").delete().eq("room_code", roomCode).eq("id", id);
-  }
+async function removeGame(id: number) {
+  const g = games.find((x) => x.id === id);
+  const label = g ? `${g.Date} • ${g.Opponent} • $${g.Price.toFixed(2)}` : `Game #${id}`;
+
+  const ok = window.confirm(`Remove this game?\n\n${label}`);
+  if (!ok) return;
+
+  await supabase.from("games").delete().eq("room_code", roomCode).eq("id", id);
+}
 
   /** ---------- Export ---------- */
   function exportCSV() {
