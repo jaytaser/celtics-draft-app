@@ -469,7 +469,14 @@ async function removeGame(id: number) {
       <div className="container" style={S.page}>
         {/* top bar */}
         <div className="toolbar" style={{ ...S.row, marginBottom: 12 }}>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>🏀 Celtics Ticket Draft</h1>
+         <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, display: "flex", alignItems: "center", gap: 8 }}>
+  <img 
+    src="/joe.png" 
+    alt="Joe Mazzulla" 
+    style={{ width: 28, height: 28, borderRadius: "50%" }} 
+  />
+  Celtics Ticket Draft
+</h1>
 
           <div className="toolbar" style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <select className="input" style={S.input as React.CSSProperties} value={season} onChange={(e) => setSeason(e.target.value)}>
