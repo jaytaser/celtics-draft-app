@@ -264,8 +264,7 @@ function Home() {
       .filter((g) => (filter.tier ? g.Tier === filter.tier : true))
       .filter((g) => (filter.dow ? g.Day === filter.dow : true))
       .filter((g) => (filter.q ? g.Opponent.toLowerCase().includes(filter.q.toLowerCase()) : true))
-      .filter((g) => (filter.max ? g.Price <= Number(filter.max) : true))
-      .filter((g) => (filter.min ? g.Price >= Number(filter.min) : true));
+
   }, [games, filter]);
 
   /** ---------- Server-persisted state changes ---------- */
